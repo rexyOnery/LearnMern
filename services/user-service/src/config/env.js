@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { parseCorsOrigins, requireEnv } from '@mern-microservices/shared';
+import { buildCorsOrigins, requireEnv } from '@mern-microservices/shared';
 
 export const env = {
   nodeEnv: process.env.NODE_ENV || 'development',
@@ -8,5 +8,5 @@ export const env = {
     process.env.USER_MONGODB_URI ||
     requireEnv('MONGODB_URI', 'mongodb://localhost:27017/user_service'),
   jwtSecret: requireEnv('JWT_SECRET', 'replace-with-a-long-random-secret'),
-  corsOrigins: parseCorsOrigins(process.env.CORS_ORIGIN || 'http://localhost:4000')
+  corsOrigins: buildCorsOrigins(process.env.CORS_ORIGIN || 'http://localhost:4000')
 };

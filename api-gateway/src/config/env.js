@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { parseCorsOrigins, requireEnv } from '@mern-microservices/shared';
+import { buildCorsOrigins, requireEnv } from '@mern-microservices/shared';
 
 export const env = {
   nodeEnv: process.env.NODE_ENV || 'development',
@@ -8,8 +8,9 @@ export const env = {
   authServiceUrl: requireEnv('AUTH_SERVICE_URL', 'http://localhost:4101'),
   userServiceUrl: requireEnv('USER_SERVICE_URL', 'http://localhost:4102'),
   productServiceUrl: requireEnv('PRODUCT_SERVICE_URL', 'http://localhost:4103'),
-  corsOrigins: parseCorsOrigins(
-    process.env.CORS_ORIGIN || 'http://localhost:5173,http://localhost:3000'
+  corsOrigins: buildCorsOrigins(
+    process.env.CORS_ORIGIN || 'http://localhost:5173,http://localhost:3000',
+    process.env.FRONTEND_URL || ''
   ),
   rateLimitWindowMs: Number(process.env.RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000),
   rateLimitMax: Number(process.env.RATE_LIMIT_MAX || 120)

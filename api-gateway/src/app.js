@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import {
   buildHealthResponse,
+  createCorsOptions,
   errorHandler,
   notFoundHandler
 } from '@mern-microservices/shared';
@@ -20,19 +21,7 @@ export const createApp = () => {
 
   app.set('trust proxy', 1);
   app.use(helmet());
-  app.use(
-    cors({
-      origin(origin, callback) {
-        if (!origin || env.corsOrigins.includes(origin)) {
-          callback(null, true);
-          return;
-        }
-
-        callback(new Error(`CORS blocked origin: ${origin}`));
-      },
-      credentials: true
-    })
-  );
+  app.use(cors(createCorsOptions({ origins: env.corsOrigins })));
   app.use(morgan(env.nodeEnv === 'production' ? 'combined' : 'dev'));
   app.use(
     rateLimit({

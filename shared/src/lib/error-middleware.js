@@ -6,9 +6,30 @@ export const notFoundHandler = (req, _res, next) => {
 };
 
 export const errorHandler = (err, _req, res, _next) => {
-  const isKnownError = err instanceof ApiError;
-  const statusCode = isKnownError ? err.statusCode : 500;
-  const message = isKnownError ? err.message : 'Unexpected server error';
+  let statusCode = err instanceof ApiError ? err.statusCode : 500;
+  let message = err instanceof ApiError ? err.message : 'Unexpected server error';
+  let details = err.details;
+
+  if (err.name === 'MongoServerError' && err.code === 11000) {
+    statusCode = 409;
+    message = 'A record with that value already exists';
+    details = err.keyValue;
+  }
+
+  if (err.name === 'ValidationError') {
+    statusCode = 400;
+    message = 'Database validation failed';
+    details = Object.values(err.errors || {}).map((error) => error.message);
+  }
+
+  if (
+    ['MongoNetworkError', 'MongoTimeoutError', 'MongooseServerSelectionError'].includes(
+      err.name
+    )
+  ) {
+    statusCode = 503;
+    message = 'Database unavailable. Check the MongoDB connection string and network access.';
+  }
 
   if (statusCode >= 500) {
     logger.error(err.stack || err.message);
@@ -17,6 +38,6 @@ export const errorHandler = (err, _req, res, _next) => {
   res.status(statusCode).json({
     success: false,
     message,
-    details: err.details
+    details
   });
 };

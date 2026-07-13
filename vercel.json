@@ -1,0 +1,61 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "frontend": {
+      "root": "frontend/",
+      "framework": "vite",
+      "buildCommand": "npm run build",
+      "outputDirectory": "dist"
+    },
+    "api_gateway": {
+      "root": "api-gateway/",
+      "framework": "express",
+      "bindings": [
+        {
+          "type": "service",
+          "service": "auth_service",
+          "format": "url",
+          "env": "AUTH_SERVICE_URL"
+        },
+        {
+          "type": "service",
+          "service": "user_service",
+          "format": "url",
+          "env": "USER_SERVICE_URL"
+        },
+        {
+          "type": "service",
+          "service": "product_service",
+          "format": "url",
+          "env": "PRODUCT_SERVICE_URL"
+        }
+      ]
+    },
+    "auth_service": {
+      "root": "services/auth-service/",
+      "framework": "express"
+    },
+    "user_service": {
+      "root": "services/user-service/",
+      "framework": "express"
+    },
+    "product_service": {
+      "root": "services/product-service/",
+      "framework": "express"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": {
+        "service": "api_gateway"
+      }
+    },
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "frontend"
+      }
+    }
+  ]
+}

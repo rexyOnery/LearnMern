@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  NODE_VERSION: 20
+  REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+  IMAGE_NAMESPACE: ${{ secrets.DOCKER_USERNAME }}
+
+jobs:
+  build-test-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Build apps
+        run: npm run build
+
+      - name: Login to Docker registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker images
+        run: |
+          docker build -f frontend/Dockerfile -t $REGISTRY/$IMAGE_NAMESPACE/mern-frontend:${{ github.sha }} .
+          docker build -f api-gateway/Dockerfile -t $REGISTRY/$IMAGE_NAMESPACE/mern-api-gateway:${{ github.sha }} .
+          docker build -f services/auth-service/Dockerfile -t $REGISTRY/$IMAGE_NAMESPACE/mern-auth-service:${{ github.sha }} .
+          docker build -f services/user-service/Dockerfile -t $REGISTRY/$IMAGE_NAMESPACE/mern-user-service:${{ github.sha }} .
+          docker build -f services/product-service/Dockerfile -t $REGISTRY/$IMAGE_NAMESPACE/mern-product-service:${{ github.sha }} .
+          docker push $REGISTRY/$IMAGE_NAMESPACE/mern-frontend:${{ github.sha }}
+          docker push $REGISTRY/$IMAGE_NAMESPACE/mern-api-gateway:${{ github.sha }}
+          docker push $REGISTRY/$IMAGE_NAMESPACE/mern-auth-service:${{ github.sha }}
+          docker push $REGISTRY/$IMAGE_NAMESPACE/mern-user-service:${{ github.sha }}
+          docker push $REGISTRY/$IMAGE_NAMESPACE/mern-product-service:${{ github.sha }}

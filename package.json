@@ -1,0 +1,36 @@
+{
+  "name": "mern-microservices-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production-minded MERN microservices starter with React, Express, MongoDB, Docker, and CI/CD examples.",
+  "type": "module",
+  "workspaces": [
+    "frontend",
+    "api-gateway",
+    "services/*",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "concurrently -n gateway,auth,users,products,frontend -c cyan,green,yellow,magenta,blue \"npm run dev --workspace api-gateway\" \"npm run dev --workspace services/auth-service\" \"npm run dev --workspace services/user-service\" \"npm run dev --workspace services/product-service\" \"npm run dev --workspace frontend\"",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down --remove-orphans"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^9.18.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.16",
+    "globals": "^15.14.0"
+  },
+  "engines": {
+    "node": ">=20.11.0",
+    "npm": ">=10.0.0"
+  },
+  "dependencies": {
+    "mongoose": "^9.7.4"
+  }
+}

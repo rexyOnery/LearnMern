@@ -4,5 +4,6 @@ export * from './lib/cors.js';
 export * from './lib/env.js';
 export * from './lib/error-middleware.js';
 export * from './lib/health.js';
+export * from './lib/load-env.js';
 export * from './lib/logger.js';
 export * from './lib/validate.js';

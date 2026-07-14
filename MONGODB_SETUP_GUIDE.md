@@ -121,6 +121,20 @@ PRODUCT_MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.n
 
 If your password contains special characters such as `@`, `#`, `%`, `/`, or `:`, URL-encode it before putting it in the connection string.
 
+Important: every URI must be assigned to an environment variable. Raw MongoDB URI lines are ignored by Node.
+
+Incorrect:
+
+```text
+mongodb+srv://user:password@cluster0.xxxxx.mongodb.net/auth_service?retryWrites=true&w=majority
+```
+
+Correct:
+
+```text
+AUTH_MONGODB_URI=mongodb+srv://user:password@cluster0.xxxxx.mongodb.net/auth_service?retryWrites=true&w=majority
+```
+
 ## 3. Configure Vercel Environment Variables
 
 In the Vercel dashboard:
@@ -192,6 +206,21 @@ PRODUCT_MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.n
 
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX=120
+```
+
+The backend services now load these files from the repository root and from each service folder:
+
+```text
+.env
+.env.local
+services/<service-name>/.env
+services/<service-name>/.env.local
+```
+
+Check that MongoDB is reachable before starting the app:
+
+```bash
+npm run check:mongo
 ```
 
 Start the app:

@@ -92,6 +92,12 @@ npm install
 npm run dev
 ```
 
+Check MongoDB connectivity before starting the full app:
+
+```bash
+npm run check:mongo
+```
+
 After the first install, commit `package-lock.json` and use `npm ci` in CI for fully reproducible installs.
 
 By default:

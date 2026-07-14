@@ -1,5 +1,10 @@
-import 'dotenv/config';
-import { buildCorsOrigins, requireEnv } from '@mern-microservices/shared';
+import {
+  buildCorsOrigins,
+  loadEnvFiles,
+  requireEnv
+} from '@mern-microservices/shared';
+
+loadEnvFiles();
 
 export const env = {
   nodeEnv: process.env.NODE_ENV || 'development',

@@ -80,6 +80,8 @@ VITE_API_BASE_URL=/api
 
 Never commit `.env` files or real secrets.
 
+For detailed MongoDB setup steps for registration, see [MONGODB_SETUP_GUIDE.md](./MONGODB_SETUP_GUIDE.md).
+
 ## Manual Local Setup
 
 These commands require internet access the first time because they install npm dependencies.
